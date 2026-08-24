@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DripManager : MonoBehaviour
@@ -11,18 +12,25 @@ public class DripManager : MonoBehaviour
     private float TotalSeconds = 0f;
     private float timePassed = 0f;
 
-    private bool isDripping = false;
+    public static event Action<float> TimePassed;
+    public static event Action OnPlayerLose;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private bool isDripping = false;
 
     // Update is called once per frame
     void Update()
     {
-        if(isDripping = false)
+        if(isDripping) 
+        {
+            timePassed += Time.deltaTime;
+            TimePassed?.Invoke(TotalSeconds / timePassed);
+        }
+
+        if(timePassed >= TotalSeconds && isDripping)
+        {
+            OnPlayerLose?.Invoke();
+            Debug.Log("Lost!");
+        }
     }
 
     public void StartTimer()
@@ -36,6 +44,6 @@ public class DripManager : MonoBehaviour
     }
     public void ResetTimer()
     {
-        TotalSeconds = Random.Range(MinMinutes * 60f, MaxMinutes * 60f);
+        TotalSeconds = UnityEngine.Random.Range(MinMinutes * 60f, MaxMinutes * 60f);
     }
 }
