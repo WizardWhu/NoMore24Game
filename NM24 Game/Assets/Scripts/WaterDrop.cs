@@ -3,20 +3,20 @@ using UnityEngine;
 [Serializable]
 public class WaterDrop
 {
-    private int SecondsTillDrop = 1;
+    private float SecondsTillDrop = 1;
     private float DropletVolume = 0f;
     public WaterDrop()
     {
         this.SecondsTillDrop = 1;
         this.DropletVolume = 0f;
     }
-    public WaterDrop(int SecondsTillDrop, float DropletVolume)
+    public WaterDrop(float SecondsTillDrop, float DropletVolume)
     {
         this.SecondsTillDrop = SecondsTillDrop;
         this.DropletVolume = DropletVolume;
     }
 
-    public void SetSecondsTillDrop(int SecondsTillDrop)
+    public void SetSecondsTillDrop(float SecondsTillDrop)
     {
         this.SecondsTillDrop = SecondsTillDrop;
     }
@@ -24,5 +24,15 @@ public class WaterDrop
     public void SetDropletVolume(float DropletVolume)
     {
         this.DropletVolume = DropletVolume;
+    }
+
+    public float GetSecondsTillDrop()
+    {
+        return this.SecondsTillDrop;
+    }
+
+    public float GetDropletVolume()
+    {
+        return this.DropletVolume;
     }
 }
