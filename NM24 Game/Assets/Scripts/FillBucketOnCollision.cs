@@ -5,6 +5,11 @@ public class FillBucketOnCollision : MonoBehaviour
     private WaterDrop currentDrop;
 
     [SerializeField] private GameObject splashPrefab;
+
+    private void Awake()
+    {
+        OnClickEmpty.OnMouseDown += ClearBucket;
+    }
     public void SetCurrentDrop(WaterDrop currentDrop)
     {
         this.currentDrop = currentDrop;
@@ -14,8 +19,13 @@ public class FillBucketOnCollision : MonoBehaviour
     {
         if (!collision.transform.CompareTag("Water")) return;
 
-        collision.transform.GetComponent<BucketManager>().AddWater(currentDrop.GetDropletVolume());
+        collision.collider.transform.GetComponent<BucketManager>().AddWater(currentDrop.GetDropletVolume());
         Instantiate(splashPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
+    }
+
+    public void ClearBucket()
+    {
+
     }
 }

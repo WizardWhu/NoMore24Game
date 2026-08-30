@@ -28,59 +28,67 @@ public class DripManager : MonoBehaviour
     public List<WaterDrop> AllWaterDrops;
     private Dripstate currentDripstate = Dripstate.NotDripping;
 
+    private float tempTimeCounter = 0f;
     private float timePassed = 0f;
     void Start()
     {
+        ResetTimer();
         StartTimer();
+
+        OnClickEmpty.OnMouseDown += ResetTimer;
     }
     // Update is called once per frame
     void Update()
     {
-        
-        if(currentDripstate == Dripstate.Dripping) 
+        if (currentDripstate == Dripstate.Dripping && AllWaterDrops.Count <= 0)
         {
+            OnPlayerLose?.Invoke();
+            currentDripstate = Dripstate.NotDripping;
+        }
+
+        if (currentDripstate == Dripstate.Dripping) 
+        {
+            tempTimeCounter += Time.deltaTime;
             timePassed += Time.deltaTime;
         }
 
-        if(timePassed >= AllWaterDrops[0].GetSecondsTillDrop() && currentDripstate == Dripstate.Dripping)
+        if (currentDripstate == Dripstate.Dripping && tempTimeCounter >= AllWaterDrops[0].GetSecondsTillDrop())
         {
             WaterDropped?.Invoke(AllWaterDrops[0]);
             AllWaterDrops.RemoveAt(0);
-            timePassed = 0f;
+            tempTimeCounter = 0f;
         }
 
-        if(currentDripstate == Dripstate.Dripping && AllWaterDrops.Count <= 0)
-        {
-            OnPlayerLose?.Invoke();
-        }
+
         
     }
 
     public void StartTimer()
     {
-        ResetTimer();
-        PopulateDripList();
         currentDripstate = Dripstate.Dripping;
     }
 
     public void PauseTimer()
     {
-        
+        currentDripstate = Dripstate.NotDripping;
     }
     public void ResetTimer()
     {
         TotalSeconds = UnityEngine.Random.Range(MinMinutes * 60f, MaxMinutes * 60f);
+        PopulateDripList();
     }
 
-    List<float> allDripTimes = new List<float>();
-    List<float> finalDripTimes = new List<float>();
 
-    List <float> allBucketValues = new List<float>();
-    List<float> LastBucketValues = new List<float>();
-    List<float> NewBucketValues = new List<float>();
 
     private void PopulateDripList()
     {
+        List<float> allDripTimes = new List<float>();
+        List<float> finalDripTimes = new List<float>();
+
+        List<float> allBucketValues = new List<float>();
+        List<float> LastBucketValues = new List<float>();
+        List<float> NewBucketValues = new List<float>();
+
         AllWaterDrops = new List<WaterDrop>();
 
         allDripTimes.Add(TotalSeconds);
@@ -142,4 +150,5 @@ public class DripManager : MonoBehaviour
             AllWaterDrops.Add(currentDrop);
         }
     }
+
 }
