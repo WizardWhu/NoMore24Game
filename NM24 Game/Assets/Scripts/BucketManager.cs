@@ -17,6 +17,8 @@ public class BucketManager : MonoBehaviour
     public void AddWater(float amount)
     {
         AmountFilled += amount;
-
+        WaterShader.SetFloat("_Fullness", amount);
     }
+
+  
 }
