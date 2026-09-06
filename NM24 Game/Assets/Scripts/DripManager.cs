@@ -23,13 +23,17 @@ public class DripManager : MonoBehaviour
 
     private float TotalSeconds = 0f;
     public static event Action<WaterDrop> WaterDropped;
-    public static event Action OnPlayerLose;
 
     public List<WaterDrop> AllWaterDrops;
     private Dripstate currentDripstate = Dripstate.NotDripping;
 
     private float tempTimeCounter = 0f;
     private float timePassed = 0f;
+
+    void Awake()
+    {
+        BucketManager.OnPlayerLose += PlayerLost;
+    }
     void Start()
     {
         ResetTimer();
@@ -40,10 +44,10 @@ public class DripManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentDripstate == Dripstate.Dripping && AllWaterDrops.Count <= 0)
+        if(AllWaterDrops.Count <= 0)
         {
-            OnPlayerLose?.Invoke();
-            currentDripstate = Dripstate.NotDripping;
+            Debug.Log("DripManager: No more water drops loaded");
+            return;
         }
 
         if (currentDripstate == Dripstate.Dripping) 
@@ -63,6 +67,27 @@ public class DripManager : MonoBehaviour
         
     }
 
+    public float GetTimeLeft()
+    {
+        if(!(AllWaterDrops.Count > 0))
+        {
+            Debug.Log("No Water Drops Left");
+            return 0;
+        }
+
+        float timeLeft = tempTimeCounter;
+        for (int i = 0; i < AllWaterDrops.Count; i++)
+        {
+            timeLeft += AllWaterDrops[i].GetSecondsTillDrop();
+        }
+
+        return timeLeft;
+    }
+
+    public void PlayerLost()
+    {
+        PauseTimer();
+    }
     public void StartTimer()
     {
         currentDripstate = Dripstate.Dripping;
@@ -150,5 +175,7 @@ public class DripManager : MonoBehaviour
             AllWaterDrops.Add(currentDrop);
         }
     }
+
+
 
 }

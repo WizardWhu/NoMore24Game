@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System;
 public class BucketManager : MonoBehaviour
 {
     [SerializeField] private float minAmount = 0f;
@@ -8,6 +8,9 @@ public class BucketManager : MonoBehaviour
     [SerializeField] private float fillSpeed = 1f;
     public Material WaterShader;
     float AmountFilled;
+    bool BucketIsClearable = false;
+    public static event Action OnPlayerLose;
+
 
     void Awake()
     {
@@ -23,13 +26,23 @@ public class BucketManager : MonoBehaviour
     public void AddWater(float amount)
     {
         AmountFilled += amount;
+        if (AmountFilled >= maxAmount)
+        {
+            Debug.Log("Player Lost");
+            OnPlayerLose?.Invoke();
+            BucketIsClearable = false;
+        }
         WaterShader.SetFloat("_Fullness", Mathf.Lerp(minAmount,maxAmount,AmountFilled));
+
     }
 
     public void ClearBucket()
     {
-        AmountFilled = minAmount;
-        WaterShader.SetFloat("_Fullness", Mathf.Lerp(minAmount, maxAmount, AmountFilled));
+        if (BucketIsClearable)
+        {
+            AmountFilled = minAmount;
+            WaterShader.SetFloat("_Fullness", Mathf.Lerp(minAmount, maxAmount, AmountFilled));
+        }
 
     }
 

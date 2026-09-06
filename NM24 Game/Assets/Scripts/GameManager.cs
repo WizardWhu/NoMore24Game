@@ -1,7 +1,12 @@
 using System;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
+public enum GameState
+{
+    NotStarted,
+    Playing,
+    GameLost
+};
 public class GameManager : MonoBehaviour
 {
     /*This is the big center script for the whole game --
@@ -27,16 +32,13 @@ public class GameManager : MonoBehaviour
 
 
     //Data To save
-    private float timePassedSinceLastPour = 0f;
-    private float totalTimeTillFull = 0f;
-
-    private bool hasStartedGame = false;
+    public float timeLeft = 0f;
 
     private DateTime timeStampWhenLastQuit;
 
+    public GameState currentGameState;
 
-
-
+    public static event Action StartedPlaying;
     //Player preferences
     [SerializeField] private float defaultVolume = 0f;
     private float volumeControl = 0f;
@@ -53,10 +55,30 @@ public class GameManager : MonoBehaviour
             _instance = this;
         }
 
+
         //connects preferences and values on game load
         ConnectRecordedValues();
-    }
+        SetToCorrectScene();
 
+    }
+    private void SetToCorrectScene()
+    {
+        if (currentGameState == GameState.NotStarted)
+        {
+            SceneManager.LoadScene(0);
+        }else if(currentGameState == GameState.Playing)
+        {
+            SceneManager.LoadScene(1);
+        }else if(currentGameState == GameState.GameLost)
+        {
+            SceneManager.LoadScene(2);
+        }
+    }
+    public void StartGame()
+    {
+        currentGameState = GameState.Playing;
+        SetToCorrectScene();
+    }
     private void ConnectRecordedValues()
     {
         //If the game has started already, connect the players values (score, timeleft etc.) to the scripts it needs to.
@@ -82,27 +104,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    private void SetValuesOnGameOpen()
-    {
-        hasStartedGame = PlayerPrefs.GetInt("hasStartedGame") == 1 ? true : false;
-        timeStampWhenLastQuit = DateTime.Parse(PlayerPrefs.GetString("timeStampWhenLastQuit"));
-        totalTimeTillFull = PlayerPrefs.GetFloat("totalTimeTillFull");
-
-        TimeSpan timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
-        timePassedSinceLastPour = PlayerPrefs.GetFloat("timePassedSinceLastPour") + (float)timePassed.TotalSeconds;
-
-
-    }
-
     private void SetDefaultValues()
     {
-        PlayerPrefs.SetFloat("timePassedSinceLastPour", 0f);
-        PlayerPrefs.SetFloat("totalTimeTillFull", 0f);
+        Debug.Log("Setting Default Values");
+        PlayerPrefs.SetFloat("timeLeft", 0f);
         PlayerPrefs.SetString("timeStampWhenLastQuit", "");
-        PlayerPrefs.SetInt("hasStartedGame", 0);
+        PlayerPrefs.SetInt("SavedGameState", 0);
         PlayerPrefs.Save();
     }
+    private void SetValuesOnGameOpen()
+    {
+        Debug.Log("Setting Values for game return");
+
+        int SavedGameState = PlayerPrefs.GetInt("SavedGameState");
+
+        currentGameState = GameState.NotStarted;
+        if (SavedGameState == 1)
+        {
+            currentGameState = GameState.Playing;
+        }
+        else if (SavedGameState == 2)
+        {
+            currentGameState = GameState.GameLost;
+        }
+
+        timeStampWhenLastQuit = DateTime.Parse(PlayerPrefs.GetString("timeStampWhenLastQuit"));
+        timeLeft = PlayerPrefs.GetFloat("timeLeft");
+
+        TimeSpan timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
+        timeLeft = PlayerPrefs.GetFloat("timeLeft") - (float)timePassed.TotalSeconds;
+    }
+
+   
 
 
     //Preferences
@@ -121,11 +154,13 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetFloat("volumeControl", volumeControl);
 
-        if (hasStartedGame)
+        if (currentGameState != GameState.NotStarted)
         {
-            PlayerPrefs.SetInt("hasStartedGame", hasStartedGame ? 1 : 0);
-            PlayerPrefs.SetFloat("totalTimeTillFull", totalTimeTillFull);
-            PlayerPrefs.SetFloat("timePassedSinceLastPour", timePassedSinceLastPour);
+            if(currentGameState == GameState.Playing) PlayerPrefs.SetInt("SavedGameState", 1);
+            if (currentGameState == GameState.GameLost) PlayerPrefs.SetInt("SavedGameState", 0);
+
+
+            PlayerPrefs.SetFloat("timeLeft", timeLeft);
 
             timeStampWhenLastQuit = System.DateTime.Now;
             PlayerPrefs.SetString("timeStampWhenLastQuit", timeStampWhenLastQuit.ToString());
