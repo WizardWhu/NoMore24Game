@@ -6,10 +6,6 @@ public class FillBucketOnCollision : MonoBehaviour
 
     [SerializeField] private GameObject splashPrefab;
 
-    private void Awake()
-    {
-        OnClickEmpty.OnMouseDown += ClearBucket;
-    }
     public void SetCurrentDrop(WaterDrop currentDrop)
     {
         this.currentDrop = currentDrop;
@@ -24,8 +20,4 @@ public class FillBucketOnCollision : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void ClearBucket()
-    {
-
-    }
 }
