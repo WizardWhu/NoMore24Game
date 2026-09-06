@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public enum GameState
@@ -43,7 +44,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float defaultVolume = 0f;
     private float volumeControl = 0f;
     public DripManager dripManager;
+    public BucketManager bucketManager;
+    public TextMeshProUGUI timerText;
 
+    private TimeSpan timePassed;
     void Awake()
     {
         //Starts Singleton stuff on game load
@@ -70,6 +74,7 @@ public class GameManager : MonoBehaviour
         if(currentGameState == GameState.Playing)
         {
             timeLeft = dripManager.GetTimeLeft();
+            timerText.text = timeLeft.ToString();
         }
     }
     private void SetToCorrectScene()
@@ -85,10 +90,11 @@ public class GameManager : MonoBehaviour
 
             StartedPlaying?.Invoke();
             dripManager = FindAnyObjectByType<DripManager>();
-
+            bucketManager = FindAnyObjectByType<BucketManager>();
             if(timeLeft != 0f)
             {
                 dripManager.SetTimer(timeLeft);
+                bucketManager.AddWater(Mathf.Lerp(0, 1, (float)timePassed.TotalSeconds / (((float)timePassed.TotalSeconds) + timeLeft)));
             }
 
         }
@@ -155,8 +161,8 @@ public class GameManager : MonoBehaviour
         timeStampWhenLastQuit = DateTime.Parse(PlayerPrefs.GetString("timeStampWhenLastQuit"));
         timeLeft = PlayerPrefs.GetFloat("timeLeft");
 
-        TimeSpan timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
-        timeLeft = PlayerPrefs.GetFloat("timeLeft") - (float)timePassed.TotalSeconds;
+        timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
+        timeLeft = PlayerPrefs.GetFloat("timeLeft") + (float)timePassed.TotalSeconds;
 
         PlayerPrefs.Save();
 
