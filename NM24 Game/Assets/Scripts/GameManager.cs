@@ -58,7 +58,8 @@ public class GameManager : MonoBehaviour
 
         //connects preferences and values on game load
         ConnectRecordedValues();
-        SetToCorrectScene();
+        StartGame();
+        //SetToCorrectScene();
 
     }
     private void SetToCorrectScene()
@@ -69,7 +70,9 @@ public class GameManager : MonoBehaviour
         }else if(currentGameState == GameState.Playing)
         {
             SceneManager.LoadScene(1);
-        }else if(currentGameState == GameState.GameLost)
+            StartedPlaying?.Invoke();
+        }
+        else if(currentGameState == GameState.GameLost)
         {
             SceneManager.LoadScene(2);
         }
@@ -77,7 +80,8 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         currentGameState = GameState.Playing;
-        SetToCorrectScene();
+        StartedPlaying?.Invoke();
+        //SetToCorrectScene();
     }
     private void ConnectRecordedValues()
     {
@@ -133,9 +137,11 @@ public class GameManager : MonoBehaviour
 
         TimeSpan timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
         timeLeft = PlayerPrefs.GetFloat("timeLeft") - (float)timePassed.TotalSeconds;
+
+        PlayerPrefs.Save();
     }
 
-   
+
 
 
     //Preferences

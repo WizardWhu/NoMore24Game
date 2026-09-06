@@ -17,12 +17,19 @@ public class BucketManager : MonoBehaviour
         AmountFilled = minAmount;
 
         OnClickEmpty.OnMouseDown += ClearBucket;
+        GameManager.StartedPlaying += MakeBucketClearable;
     }
 
+    private void OnDisable()
+    {
+        GameManager.StartedPlaying -= MakeBucketClearable;
+    }
     void Start()
     {
         WaterShader.SetFloat("_Fullness", Mathf.Lerp(minAmount, maxAmount, AmountFilled));
     }
+
+    
     public void AddWater(float amount)
     {
         AmountFilled += amount;
@@ -46,5 +53,9 @@ public class BucketManager : MonoBehaviour
 
     }
 
+    public void MakeBucketClearable()
+    {
+        BucketIsClearable = true;
+    }
 
 }
