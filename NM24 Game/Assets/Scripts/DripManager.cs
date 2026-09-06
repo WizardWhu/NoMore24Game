@@ -36,9 +36,7 @@ public class DripManager : MonoBehaviour
     }
     void Start()
     {
-        ResetTimer();
         StartTimer();
-
         OnClickEmpty.OnMouseDown += ResetTimer;
     }
     // Update is called once per frame
@@ -75,7 +73,7 @@ public class DripManager : MonoBehaviour
             return 0;
         }
 
-        float timeLeft = tempTimeCounter;
+        float timeLeft = -tempTimeCounter;
         for (int i = 0; i < AllWaterDrops.Count; i++)
         {
             timeLeft += AllWaterDrops[i].GetSecondsTillDrop();
@@ -103,10 +101,22 @@ public class DripManager : MonoBehaviour
         PopulateDripList();
     }
 
+    public void SetTimer(float TimeLeft)
+    {
+        TotalSeconds = TimeLeft;
+        PopulateDripList();
+    }
+
 
 
     private void PopulateDripList()
     {
+        if (TotalSeconds <= 0f)
+        {
+            Debug.Log("No Time Left, Drip Manager Cannot Reset");
+            return;
+        }
+
         List<float> allDripTimes = new List<float>();
         List<float> finalDripTimes = new List<float>();
 

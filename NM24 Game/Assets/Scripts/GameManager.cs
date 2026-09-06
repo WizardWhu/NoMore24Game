@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     //Player preferences
     [SerializeField] private float defaultVolume = 0f;
     private float volumeControl = 0f;
+    public DripManager dripManager;
 
     void Awake()
     {
@@ -58,36 +59,55 @@ public class GameManager : MonoBehaviour
 
         //connects preferences and values on game load
         ConnectRecordedValues();
-        StartGame();
-        //SetToCorrectScene();
 
+        SetToCorrectScene();
+
+
+
+    }
+    private void Update()
+    {
+        if(currentGameState == GameState.Playing)
+        {
+            timeLeft = dripManager.GetTimeLeft();
+        }
     }
     private void SetToCorrectScene()
     {
         if (currentGameState == GameState.NotStarted)
         {
-            SceneManager.LoadScene(0);
-        }else if(currentGameState == GameState.Playing)
+            if (SceneManager.GetActiveScene().buildIndex != 0) SceneManager.LoadScene(0);
+
+        }
+        else if(currentGameState == GameState.Playing)
         {
-            SceneManager.LoadScene(1);
+            if(SceneManager.GetActiveScene().buildIndex != 1) SceneManager.LoadScene(1);
+
             StartedPlaying?.Invoke();
+            dripManager = FindAnyObjectByType<DripManager>();
+
+            if(timeLeft != 0f)
+            {
+                dripManager.SetTimer(timeLeft);
+            }
+
         }
         else if(currentGameState == GameState.GameLost)
         {
-            SceneManager.LoadScene(2);
+            //SceneManager.LoadScene(2);
         }
     }
     public void StartGame()
     {
         currentGameState = GameState.Playing;
         StartedPlaying?.Invoke();
-        //SetToCorrectScene();
+        SetToCorrectScene();
     }
     private void ConnectRecordedValues()
     {
         //If the game has started already, connect the players values (score, timeleft etc.) to the scripts it needs to.
         //If not, set the default values
-        if (!PlayerPrefs.HasKey("hasStartedGame") || (PlayerPrefs.GetInt("hasStartedGame") == 0 ? true : false))
+        if (!PlayerPrefs.HasKey("SavedGameState") || (PlayerPrefs.GetInt("SavedGameState") == 0))
         {
             SetDefaultValues();
         }
@@ -139,6 +159,7 @@ public class GameManager : MonoBehaviour
         timeLeft = PlayerPrefs.GetFloat("timeLeft") - (float)timePassed.TotalSeconds;
 
         PlayerPrefs.Save();
+
     }
 
 
