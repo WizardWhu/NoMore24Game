@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
             timerText.text = timeLeft.ToString();
         }
     }
-    private void SetToCorrectScene()
+    public void SetToCorrectScene()
     {
         if (currentGameState == GameState.NotStarted)
         {
@@ -115,7 +115,6 @@ public class GameManager : MonoBehaviour
     public void LoseGame()
     {
         currentGameState = GameState.GameLost;
-        SetToCorrectScene();
     }
     private void ConnectRecordedValues()
     {

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 18e0a5e4c733573498e6eea2111bd13b
+guid: 751fa11ff41a558468c4e6a494aa3d99
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8502961899635245560
-    second: In-Game Menu UI Instructions Open_0
+      213: -4468994274093554799
+    second: In-Game Menu UI Instructions Open 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: In-Game Menu UI Instructions Open_0
+      name: In-Game Menu UI Instructions Open 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8f1807e0cc6900670800000000000000
-      internalID: 8502961899635245560
+      spriteID: 193266da261faf1c0800000000000000
+      internalID: -4468994274093554799
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      In-Game Menu UI Instructions Open_0: 8502961899635245560
+      In-Game Menu UI Instructions Open 1_0: -4468994274093554799
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
