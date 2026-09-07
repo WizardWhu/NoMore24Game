@@ -11,7 +11,7 @@ public class BucketManager : MonoBehaviour
     bool BucketIsClearable = false;
     public static event Action OnPlayerLose;
 
-
+    public AudioSource audioSource;
     void Awake()
     {
         AmountFilled = minAmount;
@@ -49,6 +49,7 @@ public class BucketManager : MonoBehaviour
         {
             AmountFilled = minAmount;
             WaterShader.SetFloat("_Fullness", Mathf.Lerp(minAmount, maxAmount, AmountFilled));
+            //audioSource.Play();
         }
 
     }
