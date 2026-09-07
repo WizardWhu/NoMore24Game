@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fullness: 0.06596207
+    - _Fullness: 0.117694445
     - _WaveHeight: 0.0025
     - _WaveSpeed: 0.02
     - _WaveWidth: 135.1

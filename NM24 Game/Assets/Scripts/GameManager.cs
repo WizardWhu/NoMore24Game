@@ -63,10 +63,12 @@ public class GameManager : MonoBehaviour
 
         //connects preferences and values on game load
         ConnectRecordedValues();
+        Debug.Log(currentGameState.ToString());
 
         SetToCorrectScene();
 
-
+        BucketManager.OnPlayerLose += LoseGame;
+       
 
     }
     private void Update()
@@ -94,13 +96,13 @@ public class GameManager : MonoBehaviour
             if(timeLeft != 0f)
             {
                 dripManager.SetTimer(timeLeft);
-                bucketManager.AddWater(Mathf.Lerp(0, 1, (float)timePassed.TotalSeconds / (((float)timePassed.TotalSeconds) + timeLeft)));
+                bucketManager.AddWater(Mathf.Lerp(0f, 1f, -(float)timePassed.TotalSeconds / (-(float)timePassed.TotalSeconds + timeLeft)));
             }
 
         }
         else if(currentGameState == GameState.GameLost)
         {
-            //SceneManager.LoadScene(2);
+            if (SceneManager.GetActiveScene().buildIndex != 2) SceneManager.LoadScene(2);
         }
     }
     public void StartGame()
@@ -109,11 +111,17 @@ public class GameManager : MonoBehaviour
         StartedPlaying?.Invoke();
         SetToCorrectScene();
     }
+
+    public void LoseGame()
+    {
+        currentGameState = GameState.GameLost;
+        SetToCorrectScene();
+    }
     private void ConnectRecordedValues()
     {
         //If the game has started already, connect the players values (score, timeleft etc.) to the scripts it needs to.
         //If not, set the default values
-        if (!PlayerPrefs.HasKey("SavedGameState") || (PlayerPrefs.GetInt("SavedGameState") == 0))
+        if ((PlayerPrefs.GetInt("SavedGameState") == 0))
         {
             SetDefaultValues();
         }
@@ -153,7 +161,7 @@ public class GameManager : MonoBehaviour
         {
             currentGameState = GameState.Playing;
         }
-        else if (SavedGameState == 2)
+        if (SavedGameState == 2)
         {
             currentGameState = GameState.GameLost;
         }
@@ -190,8 +198,8 @@ public class GameManager : MonoBehaviour
         if (currentGameState != GameState.NotStarted)
         {
             if(currentGameState == GameState.Playing) PlayerPrefs.SetInt("SavedGameState", 1);
-            if (currentGameState == GameState.GameLost) PlayerPrefs.SetInt("SavedGameState", 0);
-
+            if(currentGameState == GameState.GameLost) PlayerPrefs.SetInt("SavedGameState", 2);
+            Debug.Log(currentGameState.ToString());
 
             PlayerPrefs.SetFloat("timeLeft", timeLeft);
 
