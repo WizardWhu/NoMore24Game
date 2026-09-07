@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class AppearOnLose : MonoBehaviour
 {
-    private void Awake()
+    public GameObject target;
+    void Start()
     {
-        BucketManager.OnPlayerLose += SetActive;
+        BucketManager.OnPlayerLose += MakeActive;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        BucketManager.OnPlayerLose -= SetActive;
+        BucketManager.OnPlayerLose -= MakeActive;
     }
-    public void SetActive()
+    public void MakeActive()
     {
-        gameObject.SetActive(true);
+        Debug.Log("Appeared!");
+        target.SetActive(true);
     }
 }
