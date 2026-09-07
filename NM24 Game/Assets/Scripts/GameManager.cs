@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     public BucketManager bucketManager;
     public TextMeshProUGUI timerText;
 
+    public float playerScore;
     private TimeSpan timePassed;
     void Awake()
     {
@@ -63,7 +64,6 @@ public class GameManager : MonoBehaviour
 
         //connects preferences and values on game load
         ConnectRecordedValues();
-        Debug.Log(currentGameState.ToString());
 
         SetToCorrectScene();
 
@@ -71,18 +71,20 @@ public class GameManager : MonoBehaviour
        
 
     }
-    private void Update()
+    void Update()
     {
         if(currentGameState == GameState.Playing)
         {
             timeLeft = dripManager.GetTimeLeft();
             timerText.text = timeLeft.ToString();
+            playerScore += Time.deltaTime;
         }
     }
     public void SetToCorrectScene()
     {
         if (currentGameState == GameState.NotStarted)
         {
+            playerScore = 0f;
             if (SceneManager.GetActiveScene().buildIndex != 0) SceneManager.LoadScene(0);
 
         }
@@ -103,6 +105,7 @@ public class GameManager : MonoBehaviour
         else if(currentGameState == GameState.GameLost)
         {
             if (SceneManager.GetActiveScene().buildIndex != 2) SceneManager.LoadScene(2);
+            playerScore = PlayerPrefs.GetFloat("PlayerScore");
         }
     }
     public void StartGame()
@@ -114,6 +117,8 @@ public class GameManager : MonoBehaviour
 
     public void LoseGame()
     {
+        PlayerPrefs.SetFloat("PlayerScore", playerScore);
+        PlayerPrefs.Save();
         currentGameState = GameState.GameLost;
     }
     private void ConnectRecordedValues()
@@ -171,6 +176,16 @@ public class GameManager : MonoBehaviour
         timePassed = timeStampWhenLastQuit.Subtract(System.DateTime.Now);
         timeLeft = PlayerPrefs.GetFloat("timeLeft") + (float)timePassed.TotalSeconds;
 
+        playerScore = PlayerPrefs.GetFloat("PlayerScore");
+
+        if(timeLeft > 0)
+        {
+            playerScore -= (float)timePassed.TotalSeconds;
+        }
+
+
+        Debug.Log(playerScore);
+
         PlayerPrefs.Save();
 
     }
@@ -190,6 +205,11 @@ public class GameManager : MonoBehaviour
         volumeControl = PlayerPrefs.GetFloat("volumeControl");
     }
 
+    private void OnDestroy()
+    {
+        PlayerPrefs.SetFloat("PlayerScore", playerScore);
+        PlayerPrefs.Save();
+    }
     void OnApplicationQuit()
     {
         PlayerPrefs.SetFloat("volumeControl", volumeControl);
@@ -205,10 +225,19 @@ public class GameManager : MonoBehaviour
             timeStampWhenLastQuit = System.DateTime.Now;
             PlayerPrefs.SetString("timeStampWhenLastQuit", timeStampWhenLastQuit.ToString());
 
+            PlayerPrefs.SetFloat("PlayerScore", playerScore);
+
+            Debug.Log(playerScore);
         }
 
 
         PlayerPrefs.Save();
 
+    }
+
+
+    public float GetPlayerScore()
+    {
+        return playerScore;
     }
 }

@@ -1223,8 +1223,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb5b5bc605f1bb43a6c2be8122e95e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DripManager
-  MinMinutes: 0.2
-  MaxMinutes: 0.3
+  MinMinutes: 45
+  MaxMinutes: 100
   MaxSecondsBetweenDrops: 4
   MinSecondsBetweenDrops: 1
   AllWaterDrops: []
@@ -1309,6 +1309,7 @@ MonoBehaviour:
   dripManager: {fileID: 832162287}
   bucketManager: {fileID: 398243185}
   timerText: {fileID: 2024846207}
+  playerScore: 0
 --- !u!114 &1017650636
 MonoBehaviour:
   m_ObjectHideFlags: 0

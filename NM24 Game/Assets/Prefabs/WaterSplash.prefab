@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6360240067291554316}
   - component: {fileID: 7165014109156972116}
   - component: {fileID: 8774842301856192284}
+  - component: {fileID: 7989284594538775263}
   m_Layer: 0
   m_Name: WaterSplash
   m_TagString: Untagged
@@ -4895,3 +4896,16 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &7989284594538775263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8350933157826400148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 936185ded3518f04eb448baefce30c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyAfterSetTime
+  Timer: 10
